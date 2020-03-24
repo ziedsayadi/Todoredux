@@ -1,6 +1,6 @@
 import React,{Component} from 'react'
 import { connect } from 'react-redux'
-import {addtodo , remove, complet, edit} from "../Actions/actions"
+import {addtodo , remove, complet, edit,change} from "../Actions/actions"
 
 
  class Items extends Component    {
@@ -23,13 +23,16 @@ import {addtodo , remove, complet, edit} from "../Actions/actions"
             inputuser:this.state.task,
             id:Math.random(),
             completed:false,
+            editt:false
         })
         this.setState({
             task:"",
             finished:!addtodo.completed
         })
     }
-   
+    changeElement = (e,i) => {
+        this.props.change(e.target.value,i);
+      };
 
     
 
@@ -45,7 +48,7 @@ import {addtodo , remove, complet, edit} from "../Actions/actions"
                             <i className="fas fa-book p-2"></i>
                         </div>
                         </div>
-                        <input type="text" className="form-control text-capitalize" value={this.state.task} placeholder="put you task here !!!" onChange={ this.hundelChange}></input>
+                        <input type="text" className="form-control text-capitalize" value={this.state.task} placeholder="put you task here !!!" onChange={this.hundelChange}></input>
                     </div>
                     <button type="submit" onClick={this.hundelAdd } className={this.state.finished ? "btn btn-block btn-success mt-2" : "btn btn-block btn-primary mt-2"}>{this.state.finished ? "Edit Task":"Add Task"}</button>
                 </from>
@@ -53,9 +56,18 @@ import {addtodo , remove, complet, edit} from "../Actions/actions"
 
             <ul className="list-group mt-4">
                 <h3 className="text-capitalize text-center">to do list</h3>
-            {this.props.todo.map((el,id)=>
-               (<li key={id} className="list-group-items text-capitalize d-flex justify-content-between my-2" >
-                     <h6 style={{textDecoration : el.completed ? "line-through":""}}> {el.inputuser}</h6>
+            {this.props.todo.map((el,key)=>
+               (<li key={key} className="list-group-items text-capitalize d-flex justify-content-between my-2" >
+               {el.editt ? (
+                <input
+                  value={el.inputuser}
+                  onChange={(e) => this.changeElement(e, el.id)}
+                >
+                    
+                </input>
+              ) : (
+                <h6  style={{textDecoration : el.completed ? "line-through":""}}> {el.inputuser}</h6>
+              )}
                      <div  className="todo-icon">
                      <span onClick={()=>this.props.edit(el.id)} className="mx-2 text-primary">
                              <i class="fas fa-check"></i>
@@ -91,7 +103,8 @@ const mapDispatchToProps=dispatch=>{
     return{addtodo:(text)=>dispatch(addtodo(text)),
     remove:(i)=>dispatch(remove(i)),
     complet : (i)=> dispatch(complet(i)),
-    edit : (i)=> dispatch(edit(i))
+    edit : (i)=> dispatch(edit(i)),
+    change : (text,i)=> dispatch(change(text,i))
     }
 }
 
