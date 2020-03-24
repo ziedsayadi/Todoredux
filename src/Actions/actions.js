@@ -1,5 +1,5 @@
 import {ADD_TODO} from "./actionsexp"
-import {REMOVE , COMPLET} from "./actionsexp"
+import {REMOVE , COMPLET , EDIT} from "./actionsexp"
 
 
 export  function addtodo (text){
@@ -12,4 +12,7 @@ export function remove (i){
 
 export function complet (i){
     return {type:COMPLET , i}
+}
+export function edit (i){
+    return {type:EDIT , i}
 }

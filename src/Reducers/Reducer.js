@@ -1,5 +1,5 @@
 import {ADD_TODO} from "../Actions/actionsexp"
-import {REMOVE , COMPLET} from "../Actions/actionsexp"
+import {REMOVE , COMPLET , EDIT} from "../Actions/actionsexp"
 const globalState=[]
 
  function todoReducers(state=globalState , action){
@@ -16,7 +16,12 @@ const globalState=[]
 
         return state.map(el=>el.id==action.i ?{...el,completed:!el.completed}:el)
 
+        case EDIT :
+          return  state.map(el=>el.id==action.i?{...el,completed:!el.completed}:el.userInput)
+          
+
         default : 
+
 
              return state
      }

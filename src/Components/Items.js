@@ -1,32 +1,36 @@
 import React,{Component} from 'react'
 import { connect } from 'react-redux'
-import {addtodo , remove, complet} from "../Actions/actions"
+import {addtodo , remove, complet, edit} from "../Actions/actions"
 
 
  class Items extends Component    {
      
  
     state={
-        task:""
+        task:"",
+        finished : false
     };
     
     
     hundelChange=(e)=>{
         this.setState({task:e.target.value.trim()})
     }
-    hundelAdd=(task)=>{ 
-        if(task){
+   
+    hundelAdd=(e)=>{ 
+        
+        e.preventDefault()
         this.props.addtodo({
             inputuser:this.state.task,
             id:Math.random(),
-            completed:false
+            completed:false,
         })
         this.setState({
-            task:""
+            task:"",
+            finished:!addtodo.completed
         })
-    }else {return alert ("enter todo ")}
-        
     }
+   
+
     
 
     render() {
@@ -43,7 +47,7 @@ import {addtodo , remove, complet} from "../Actions/actions"
                         </div>
                         <input type="text" className="form-control text-capitalize" value={this.state.task} placeholder="put you task here !!!" onChange={ this.hundelChange}></input>
                     </div>
-                    <button type="submit" onClick={this.hundelAdd} className="btn btn-block btn-primary mt-2">Add</button>
+                    <button type="submit" onClick={this.hundelAdd } className={this.state.finished ? "btn btn-block btn-success mt-2" : "btn btn-block btn-primary mt-2"}>{this.state.finished ? "Edit Task":"Add Task"}</button>
                 </from>
             </div>
 
@@ -53,6 +57,9 @@ import {addtodo , remove, complet} from "../Actions/actions"
                (<li key={id} className="list-group-items text-capitalize d-flex justify-content-between my-2" >
                      <h6 style={{textDecoration : el.completed ? "line-through":""}}> {el.inputuser}</h6>
                      <div  className="todo-icon">
+                     <span onClick={()=>this.props.edit(el.id)} className="mx-2 text-primary">
+                             <i class="fas fa-check"></i>
+                            </span>
                         <span onClick={()=>this.props.complet(el.id)} className="mx-2 text-success">
                             <i className="fas fa-pen"></i>
                         </span>
@@ -83,7 +90,8 @@ const mapStateToProps=state=>{
 const mapDispatchToProps=dispatch=>{
     return{addtodo:(text)=>dispatch(addtodo(text)),
     remove:(i)=>dispatch(remove(i)),
-    complet : (i)=> dispatch(complet(i))
+    complet : (i)=> dispatch(complet(i)),
+    edit : (i)=> dispatch(edit(i))
     }
 }
 
